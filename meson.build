@@ -14,7 +14,7 @@ sources = ['crypto_scrypt-check.c',
 ]
 inc = include_directories('./')
 install_headers('libscrypt.h','sha256.h',subdir: 'libscrypt')
-lib = library('libscrypt', sources: sources, version: version,
+lib = static_library('libscrypt', sources: sources, version: version,
 include_directories : inc,
 c_args: ['-Wall', '-O2', '-ffast-math', '-g', '-D_FORTIFY_SOURCE=2', '-fstack-protector'],
 install: true)
