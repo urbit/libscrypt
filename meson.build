@@ -16,7 +16,7 @@ inc = include_directories('./')
 install_headers('libscrypt.h','sha256.h',subdir: 'libscrypt')
 lib = static_library('libscrypt', sources: sources, version: version,
 include_directories : inc,
-c_args: ['-Wall', '-O2', '-ffast-math', '-g', '-D_FORTIFY_SOURCE=2', '-fstack-protector'],
+c_args: ['-Wall', '-ffast-math', '-D_FORTIFY_SOURCE=2', '-fstack-protector'],
 install: true)
 
 libscrypt_dep = declare_dependency(include_directories : inc,
