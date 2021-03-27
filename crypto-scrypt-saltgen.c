@@ -4,9 +4,20 @@
 #include <errno.h>
 #include <fcntl.h>
 
-/* Disable on Windows, there is no /dev/urandom.
-   Link-time error is better than runtime error. */
-#ifndef _WIN32
+#ifdef _WIN32
+
+#include <windows.h>
+#include <bcrypt.h>
+
+int libscrypt_salt_gen(uint8_t *salt, size_t len)
+{
+	if (BCryptGenRandom(NULL, salt, len, BCRYPT_USE_SYSTEM_PREFERRED_RNG) != 0)
+        return -1;
+
+    return 0;
+}
+
+#else
 
 #ifndef S_SPLINT_S /* Including this here triggers a known bug in splint */
 #include <unistd.h>

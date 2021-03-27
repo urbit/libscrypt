@@ -8,14 +8,21 @@ CC?=gcc
 CFLAGS?=$(CFLAGS_EXTRA) -D_FORTIFY_SOURCE=2 -fPIC
 LDFLAGS?=$(LDFLAGS_EXTRA) -Wl,-soname,libscrypt.so.0 -Wl,--version-script=libscrypt.version
 CFLAGS_EXTRA?=-Wl,-rpath=. -O2 -Wall -g -fstack-protector
+
+ifeq ($(MSYSTEM),MINGW64)
+LDFLAGS_EXTRA?=
+LIBS?=-lbcrypt -lssp
+else
 LDFLAGS_EXTRA?=-Wl,-z,relro
+LIBS?=-lm -lc
+endif
 
 all: reference
 
 OBJS= crypto_scrypt-nosse.o sha256.o crypto-mcf.o b64.o crypto-scrypt-saltgen.o crypto_scrypt-check.o crypto_scrypt-hash.o slowequals.o
 
 libscrypt.so.0: $(OBJS) 
-	$(CC) $(LDFLAGS) -shared -o libscrypt.so.0  $(OBJS) -lm -lc
+	$(CC) $(LDFLAGS) -shared -o libscrypt.so.0  $(OBJS) $(LIBS)
 	ar rcs libscrypt.a  $(OBJS)
 
 reference: libscrypt.so.0 main.o crypto_scrypt-hexconvert.o
